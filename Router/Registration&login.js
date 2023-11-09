@@ -1,5 +1,5 @@
 const express=require("express");
-const User=require("./SchemaModel/User");
+const User=require("../SchemaModel/User");
 const jwt=require("jsonwebtoken");
 const auth=require("./Adminroutes");
 const bcrypt=require("bcrypt");

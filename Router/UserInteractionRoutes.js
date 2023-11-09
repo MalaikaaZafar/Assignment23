@@ -1,6 +1,6 @@
 const express=require("express");
-const User=require("./SchemaModel/User");
-const blog=require("./SchemaModel/Blog");
+const User=require("../SchemaModel/User");
+const blog=require("../SchemaModel/Blog");
 const jwt=require("jsonwebtoken");
 const router=express.Router();
 const JWT_SECRET="secret";
@@ -51,6 +51,12 @@ router.get("/getBlogsOnFeed",Authenticate, async(req, res)=>{
     const blogs=await blog.find({});
     var feed=blogs.filter((blog)=>{if (following.includes(blog.author_email) && blog.isDisabled===false) return blog});
     return res.json(feed);
+})
+
+router.get("/checkNotifs",Authenticate, async(req, res)=>{
+    const userFeed=await User.findOne({email: req.body.email});
+    const notifs=userFeed.Notification;
+    return res.json(notifs);
 })
 
 module.exports=router;

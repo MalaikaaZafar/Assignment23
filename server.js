@@ -1,9 +1,10 @@
 const express=require("express");
 const mongoo=require("mongoose");
-const route=require("./Adminroutes");
-const reg=require("./Registration&login");
-const userInteraction=require("./UserInteractionRoutes");
-const blogPost=require("./BlogPostRoutes");
+const route=require("./Router/Adminroutes");
+const reg=require("./Router/Registration&login");
+const userInteraction=require("./Router/UserInteractionRoutes");
+const blogPost=require("./Router/BlogPostRoutes");
+const search=require("./Router/SearchRoutes");
 
 const app=express();
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use('/', route);
 app.use('/', reg);
 app.use('/', blogPost);
 app.use("/", userInteraction);
+app.use("/", search);
 
 mongoo.connect("mongodb://127.0.0.1:27017/Blog");
 

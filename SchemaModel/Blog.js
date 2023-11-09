@@ -35,7 +35,10 @@ const blogPostSchema = new mongoose.Schema({
         type:Boolean,
         default:false,
     },
-    
+    avgRate:{
+        type:Number,
+        default:0,
+    }
 });
 
 const BlogPost = mongoose.model('BlogPost', blogPostSchema);

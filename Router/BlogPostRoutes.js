@@ -1,9 +1,10 @@
 const express=require("express");
-const User=require("./SchemaModel/User");
-const blog=require("./SchemaModel/Blog");
+const User=require("../SchemaModel/User");
+const blog=require("../SchemaModel/Blog");
 const jwt=require("jsonwebtoken");
 const router=express.Router();
 const JWT_SECRET="secret";
+var count=0;
 
 const Authenticate=(req, res, next)=>{
     const jwtToken=req.header("token");
@@ -14,11 +15,15 @@ const Authenticate=(req, res, next)=>{
     }
     const {_id, email, isAdmin}=jwtTokenVerif;
     req.body._id= _id;
-    req.body.email=email;
+    req.body.author_email=email;
     req.body.isAdmin=isAdmin;
     next();
 }
 
+function calcAvg(arr){
+    let sum = arr.reduce((a, b) => ({rating: a.rating + b.rating}), {rating: 0}).rating;
+    return sum/arr.length;
+}
 router.post("/createBlogPost", Authenticate, async(req, res)=>{
     try{
      const {title, content,author_email, tags}=req.body;
@@ -112,14 +117,15 @@ router.put("/insertComment", Authenticate, async(req, res)=>{
 
 router.put("/giveRating", Authenticate, async(req, res)=>{
     try{
-        const {title, rating_email, rating}=req.body;
+        const {title, author_email, rating}=req.body;
         const oldBlog=await blog.findOne({title});
         if (!oldBlog)
         {
             return res.send ("Blog does not exist");
         }
-        const newRating={rating_email:rating_email, rating:rating};
+        const newRating={rating_email:author_email, rating:rating};
         oldBlog.rating.push(newRating);
+        oldBlog.avgRate=await calcAvg(oldBlog.rating);
         await oldBlog.save();
         return res.json(oldBlog);
     }
